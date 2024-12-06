@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 import pyqtree
 
-road_zoom_levels = {
+ROAD_ZOOM_LEVELS = {
     'motorway': {'min_zoom': 5, 'max_zoom': 18},
     'motorway_link': {'min_zoom': 5, 'max_zoom': 18},
     'primary': {'min_zoom': 8, 'max_zoom': 18},
@@ -25,7 +25,7 @@ road_zoom_levels = {
     'trunk': {'min_zoom': 7, 'max_zoom': 18},
 }
 
-road_colors = {
+ROAD_COLORS = {
     # 'motorway': (255, 0, 0),
     # 'motorway_link': (255, 128, 128),
     'primary': (252, 214, 164),
@@ -45,14 +45,14 @@ road_colors = {
 
 ROAD_DEFAULT_COLOR = (255, 255, 255)
 
-road_outline_colors = {
+ROAD_OUTLINE_COLORS = {
     # 'motorway': (200, 0, 0),
     # 'motorway_link': (200, 100, 100),
-    # 'primary': road_colors['primary'],
+    # 'primary': ROAD_COLORS['primary'],
     # 'primary_link': (200, 160, 100),
-    # 'secondary': road_colors['secondary'],
+    # 'secondary': ROAD_COLORS['secondary'],
     # 'secondary_link': (200, 200, 100),
-    # 'tertiary': road_colors['tertiary'],
+    # 'tertiary': ROAD_COLORS['tertiary'],
     # 'tertiary_link': (100, 200, 100),
     # 'residential': (0, 0, 200),
     # 'unclassified': (100, 100, 200),
@@ -60,12 +60,12 @@ road_outline_colors = {
     # 'path': (100, 100, 100),
     # 'cycleway': (0, 200, 200),
     # 'construction': (200, 0, 200),
-    'trunk': road_colors['trunk'],
+    'trunk': ROAD_COLORS['trunk'],
 }
 
 ROAD_OUTLINE_DEFAULT_COLOR = (200, 200, 200)
 
-road_outline_width = {
+ROAD_OUTLINE_WIDTH = {
     # 'motorway': 10,
     # 'motorway_link': 10,
     'primary': 48,
@@ -85,7 +85,7 @@ road_outline_width = {
 
 ROAD_OUTLINE_DEFAULT_WIDTH = 20
 
-green_area_zoom_levels = {
+GREEN_AREA_ZOOM_LEVELS = {
     'park': {'min_zoom': 10, 'max_zoom': 18},
     'forest': {'min_zoom': 10, 'max_zoom': 18},
     'grass': {'min_zoom': 10, 'max_zoom': 18},
@@ -94,7 +94,7 @@ green_area_zoom_levels = {
     'garden': {'min_zoom': 10, 'max_zoom': 18},
 }
 
-waterway_zoom_levels = {
+WATERWAY_ZOOM_LEVELS = {
     'river': {'min_zoom': 10+2, 'max_zoom': 18},
     'stream': {'min_zoom': 12+2, 'max_zoom': 18},
     'canal': {'min_zoom': 10+2, 'max_zoom': 18},
@@ -103,7 +103,7 @@ waterway_zoom_levels = {
     'water': {'min_zoom': 10, 'max_zoom': 18},  # Add this line
 }
 
-green_area_colors = {
+GREEN_AREA_COLORS = {
     'park': (200, 250, 204),
     'forest': (173, 209, 158),
     'grass': (205, 235, 176),
@@ -190,9 +190,9 @@ class OSMHandler(osmium.SimpleHandler):
             if road_type == 'construction' and 'construction' in w.tags:
                 road_type = w.tags['construction']
                 print('fallbacked to', road_type)
-            if road_type in road_zoom_levels:
-                min_z = road_zoom_levels[road_type]['min_zoom']
-                max_z = road_zoom_levels[road_type]['max_zoom']
+            if road_type in ROAD_ZOOM_LEVELS:
+                min_z = ROAD_ZOOM_LEVELS[road_type]['min_zoom']
+                max_z = ROAD_ZOOM_LEVELS[road_type]['max_zoom']
                 coords = [(node.lon, node.lat) for node in w.nodes]
                 if len(coords) < 2:
                     return
@@ -229,9 +229,9 @@ class OSMHandler(osmium.SimpleHandler):
         # 处理绿地
         if 'landuse' in w.tags or 'leisure' in w.tags or 'natural' in w.tags:
             landuse_type = w.tags.get('landuse') or w.tags.get('leisure') or w.tags.get('natural')
-            if landuse_type in green_area_zoom_levels:
-                min_z = green_area_zoom_levels[landuse_type]['min_zoom']
-                max_z = green_area_zoom_levels[landuse_type]['max_zoom']
+            if landuse_type in GREEN_AREA_ZOOM_LEVELS:
+                min_z = GREEN_AREA_ZOOM_LEVELS[landuse_type]['min_zoom']
+                max_z = GREEN_AREA_ZOOM_LEVELS[landuse_type]['max_zoom']
                 coords = [(node.lon, node.lat) for node in w.nodes]
                 if len(coords) < 3:
                     return
@@ -248,9 +248,9 @@ class OSMHandler(osmium.SimpleHandler):
         # 处理河流
         if 'waterway' in w.tags:
             waterway_type = w.tags['waterway']
-            if waterway_type in waterway_zoom_levels:
-                min_z = waterway_zoom_levels[waterway_type]['min_zoom']
-                max_z = waterway_zoom_levels[waterway_type]['max_zoom']
+            if waterway_type in WATERWAY_ZOOM_LEVELS:
+                min_z = WATERWAY_ZOOM_LEVELS[waterway_type]['min_zoom']
+                max_z = WATERWAY_ZOOM_LEVELS[waterway_type]['max_zoom']
                 coords = [(node.lon, node.lat) for node in w.nodes]
                 if len(coords) < 2:
                     return
@@ -351,7 +351,7 @@ def draw_green_area(draw, polygon, scale, landuse_type):
     """
     绘制绿地多边形。
     """
-    fill_color = green_area_colors.get(landuse_type, GREEN_AREA_DEFAULT_COLOR) # default to green
+    fill_color = GREEN_AREA_COLORS.get(landuse_type, GREEN_AREA_DEFAULT_COLOR) # default to green
     exterior = [scale(coord) for coord in polygon.exterior.coords]
     draw.polygon(exterior, fill=fill_color)
 
@@ -386,9 +386,9 @@ def draw_road(draw, line, scale, road_type, width, color=None, outline_color=Non
     line_pixels = [scale(coord) for coord in line.coords]
     
     if color is None:
-        color = road_colors.get(road_type, ROAD_DEFAULT_COLOR)
+        color = ROAD_COLORS.get(road_type, ROAD_DEFAULT_COLOR)
     if outline_color is None:
-        outline_color = road_outline_colors.get(road_type, ROAD_OUTLINE_DEFAULT_COLOR)
+        outline_color = ROAD_OUTLINE_COLORS.get(road_type, ROAD_OUTLINE_DEFAULT_COLOR)
     
     if width <= 4:
         if outline: real_draw_road(draw, line_pixels, width, color)
@@ -566,14 +566,14 @@ def generate_tile(z, x, y, quadtrees, font):
         drawed |= len(roads) > 0
         for road in roads:
             road_type = road.get('fined_type', 'road')
-            width = road_outline_width.get(road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
+            width = ROAD_OUTLINE_WIDTH.get(road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
             width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
             # width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
             draw_road(draw, road['element'], scale, road_type, width, outline=True)
             
         for road in roads:
             road_type = road.get('fined_type', 'road')
-            width = road_outline_width.get(road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
+            width = ROAD_OUTLINE_WIDTH.get(road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
             width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
             # width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
             draw_road(draw, road['element'], scale, road_type, width)
