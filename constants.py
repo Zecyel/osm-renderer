@@ -1,20 +1,23 @@
+def zoom_range(min_zoom, max_zoom):
+    return range(min_zoom, max_zoom + 1)
+
 
 ROAD_ZOOM_LEVELS = {
-    'motorway': {'min_zoom': 5, 'max_zoom': 18},
-    'motorway_link': {'min_zoom': 5, 'max_zoom': 18},
-    'primary': {'min_zoom': 8, 'max_zoom': 18},
-    'primary_link': {'min_zoom': 8, 'max_zoom': 18},
-    'secondary': {'min_zoom': 11, 'max_zoom': 18},
-    'secondary_link': {'min_zoom': 11, 'max_zoom': 18},
-    'tertiary': {'min_zoom': 13, 'max_zoom': 18},
-    'tertiary_link': {'min_zoom': 13, 'max_zoom': 18},
-    'residential': {'min_zoom': 15, 'max_zoom': 18},
-    'unclassified': {'min_zoom': 15, 'max_zoom': 18},
-    'service': {'min_zoom': 5, 'max_zoom': 18},
-    'path': {'min_zoom': 17, 'max_zoom': 18},
-    'cycleway': {'min_zoom': 17, 'max_zoom': 18},
-    # 'construction': {'min_zoom': 15, 'max_zoom': 18},
-    'trunk': {'min_zoom': 7, 'max_zoom': 18},
+    'motorway': zoom_range(5, 18),
+    'motorway_link': zoom_range(5, 18),
+    'primary': zoom_range(8, 18),
+    'primary_link': zoom_range(8, 18),
+    'secondary': zoom_range(11, 18),
+    'secondary_link': zoom_range(11, 18),
+    'tertiary': zoom_range(13, 18),
+    'tertiary_link': zoom_range(13, 18),
+    'residential': zoom_range(15, 18),
+    'unclassified': zoom_range(15, 18),
+    'service': zoom_range(5, 18),
+    'path': zoom_range(17, 18),
+    'cycleway': zoom_range(17, 18),
+    # 'construction': zoom_range(15, 18),
+    'trunk': zoom_range(7, 18),
 }
 
 ROAD_COLORS = {
@@ -78,21 +81,21 @@ ROAD_OUTLINE_WIDTH = {
 ROAD_OUTLINE_DEFAULT_WIDTH = 20
 
 GREEN_AREA_ZOOM_LEVELS = {
-    'park': {'min_zoom': 10, 'max_zoom': 18},
-    'forest': {'min_zoom': 10, 'max_zoom': 18},
-    'grass': {'min_zoom': 10, 'max_zoom': 18},
-    'meadow': {'min_zoom': 10, 'max_zoom': 18},
-    'recreation_ground': {'min_zoom': 10, 'max_zoom': 18},
-    'garden': {'min_zoom': 10, 'max_zoom': 18},
+    'park': zoom_range(10, 18),
+    'forest': zoom_range(10, 18),
+    'grass': zoom_range(10, 18),
+    'meadow': zoom_range(10, 18),
+    'recreation_ground': zoom_range(10, 18),
+    'garden': zoom_range(10, 18),
 }
 
 WATERWAY_ZOOM_LEVELS = {
-    'river': {'min_zoom': 10+2, 'max_zoom': 18},
-    'stream': {'min_zoom': 12+2, 'max_zoom': 18},
-    'canal': {'min_zoom': 10+2, 'max_zoom': 18},
-    'drain': {'min_zoom': 12+2, 'max_zoom': 18},
-    'ditch': {'min_zoom': 12+2, 'max_zoom': 18},
-    'water': {'min_zoom': 10, 'max_zoom': 18},  # Add this line
+    'river': zoom_range(10+2, 18),
+    'stream': zoom_range(12+2, 18),
+    'canal': zoom_range(10+2, 18),
+    'drain': zoom_range(12+2, 18),
+    'ditch': zoom_range(12+2, 18),
+    'water': zoom_range(10, 18),  # Add this line
 }
 
 GREEN_AREA_COLORS = {

@@ -1,6 +1,6 @@
 import math
 import osmium
-from shapely.geometry import LineString, Polygon, MultiPolygon, GeometryCollection, MultiLineString
+from shapely.geometry import LineString, Polygon
 from shapely.ops import transform
 from pyproj import Transformer
 from PIL import Image, ImageDraw, ImageFont
@@ -76,8 +76,6 @@ class OSMHandler(osmium.SimpleHandler):
                 road_type = w.tags['construction']
                 print('fallbacked to', road_type)
             if road_type in ROAD_ZOOM_LEVELS:
-                min_z = ROAD_ZOOM_LEVELS[road_type]['min_zoom']
-                max_z = ROAD_ZOOM_LEVELS[road_type]['max_zoom']
                 coords = [(node.lon, node.lat) for node in w.nodes]
                 if len(coords) < 2:
                     return
@@ -85,7 +83,7 @@ class OSMHandler(osmium.SimpleHandler):
                 projected = transform(self.transformer.transform, line)
                 
                 # 将道路插入到对应的四叉树中
-                for z in range(min_z, max_z + 1):
+                for z in ROAD_ZOOM_LEVELS[road_type]:
                     self.quadtrees[z].insert({ 'type': 'road', 'element': projected, 'fined_type': road_type }, projected.bounds)
 
         # 处理建筑物
@@ -115,8 +113,6 @@ class OSMHandler(osmium.SimpleHandler):
         if 'landuse' in w.tags or 'leisure' in w.tags or 'natural' in w.tags:
             landuse_type = w.tags.get('landuse') or w.tags.get('leisure') or w.tags.get('natural')
             if landuse_type in GREEN_AREA_ZOOM_LEVELS:
-                min_z = GREEN_AREA_ZOOM_LEVELS[landuse_type]['min_zoom']
-                max_z = GREEN_AREA_ZOOM_LEVELS[landuse_type]['max_zoom']
                 coords = [(node.lon, node.lat) for node in w.nodes]
                 if len(coords) < 3:
                     return
@@ -127,22 +123,20 @@ class OSMHandler(osmium.SimpleHandler):
                     polygon = polygon.buffer(0)
                 projected = transform(self.transformer.transform, polygon)
                 
-                for z in range(min_z, max_z + 1):
+                for z in GREEN_AREA_ZOOM_LEVELS[landuse_type]:
                     self.quadtrees[z].insert({ 'type': 'green_area', 'element': projected, 'landuse_type': landuse_type }, projected.bounds)
         
         # 处理河流
         if 'waterway' in w.tags:
             waterway_type = w.tags['waterway']
             if waterway_type in WATERWAY_ZOOM_LEVELS:
-                min_z = WATERWAY_ZOOM_LEVELS[waterway_type]['min_zoom']
-                max_z = WATERWAY_ZOOM_LEVELS[waterway_type]['max_zoom']
                 coords = [(node.lon, node.lat) for node in w.nodes]
                 if len(coords) < 2:
                     return
                 line = LineString(coords)
                 projected = transform(self.transformer.transform, line)
                 
-                for z in range(min_z, max_z + 1):
+                for z in WATERWAY_ZOOM_LEVELS[waterway_type]:
                     self.quadtrees[z].insert({ 'type': 'waterway', 'element': projected }, projected.bounds)
 
         # 处理水域

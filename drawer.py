@@ -2,7 +2,7 @@
 import math
 from pyproj import Transformer
 from shapely.geometry import LineString, Polygon, MultiPolygon, GeometryCollection, MultiLineString
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from constants import *
 
 def tile_to_bbox(z, x, y):
