@@ -13,7 +13,7 @@ def lonlat_to_tile(z, lon, lat):
     """
     Convert longitude and latitude to tile x, y at zoom level z.
     """
-    n = 2.0 ** z
+    n = ZOOM_BASE ** z
     x_tile = int((lon + 180.0) / 360.0 * n)
     lat_rad = math.radians(lat)
     y_tile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)

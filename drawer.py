@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 from constants import *
 
 def tile_to_bbox(z, x, y):
-    n = 2.0 ** z
+    n = ZOOM_BASE ** z
     lon_min = x / n * 360.0 - 180.0
     lat_min = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * y / n))))
     lon_max = (x + 1) / n * 360.0 - 180.0
@@ -156,15 +156,13 @@ class TileDrawer:
 
         # draw roads
         if 'road' in items:
-            ROAD_WIDTH_DECEASE_RATE = 1.9
             roads = filter_lines(items['road'], tile_polygon)
             drawed |= len(roads) > 0
             for road in roads:
                 road_type = road.get('fined_type', 'road')
                 width = ROAD_OUTLINE_WIDTH.get(
                     road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
-                width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
-                # width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
+                width /= ZOOM_BASE ** (18 - z)
                 self.draw_road(road['element'],
                                road_type, width, outline=True)
 
@@ -172,8 +170,7 @@ class TileDrawer:
                 road_type = road.get('fined_type', 'road')
                 width = ROAD_OUTLINE_WIDTH.get(
                     road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
-                width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
-                # width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
+                width /= ZOOM_BASE ** (18 - z)
                 self.draw_road(road['element'], road_type, width)
 
         if 'text' in items:
