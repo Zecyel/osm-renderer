@@ -114,6 +114,8 @@ green_area_colors = {
 
 GREEN_AREA_DEFAULT_COLOR = (200, 250, 204)
 
+FONT_SIZE = 20
+
 def tile_to_bbox(z, x, y):
     n = 2.0 ** z
     lon_min = x / n * 360.0 - 180.0
@@ -559,32 +561,32 @@ def generate_tile(z, x, y, quadtrees, font):
     
     # draw roads
     if 'road' in items:
-        ROAD_WIDTH_DECEASE_RATE = 3
+        ROAD_WIDTH_DECEASE_RATE = 1.9
         roads = filter_lines(items['road'], tile_polygon)
         drawed |= len(roads) > 0
         for road in roads:
             road_type = road.get('fined_type', 'road')
             width = road_outline_width.get(road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
-            # width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
-            width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
+            width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
+            # width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
             draw_road(draw, road['element'], scale, road_type, width, outline=True)
             
         for road in roads:
             road_type = road.get('fined_type', 'road')
             width = road_outline_width.get(road_type, ROAD_OUTLINE_DEFAULT_WIDTH)
-            # width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
-            width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
+            width /= ROAD_WIDTH_DECEASE_RATE ** (18 - z)
+            # width -= ROAD_WIDTH_DECEASE_RATE * (18 - z)
             draw_road(draw, road['element'], scale, road_type, width)
 
     if 'text' in items:
         drawed |= len(items['text']) > 0
         for text in items['text']:
-            draw_text(draw, text, scale, font)
+            draw_text(draw, text['element'], scale, font)
 
     return img if drawed else None
 
 def generate_tiles(z, x_start, x_end, y_start, y_end, quadtrees, output_dir='tiles'):
-    font = ImageFont.truetype("C:/Windows/fonts/Dengl.ttf", 12)
+    font = ImageFont.truetype("C:/Windows/fonts/Dengl.ttf", FONT_SIZE)
     for x in range(x_start, x_end + 1):
         for y in range(y_start, y_end + 1):
             img = generate_tile(z, x, y, quadtrees, font)
