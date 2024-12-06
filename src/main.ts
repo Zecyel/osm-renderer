@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 import './styles.css'
 import { createApp } from 'vue'
 import App from './App.vue'
