@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css'
 import { onMounted, ref } from 'vue';
 
 const officialTile = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-const myTile = window.location.origin + '/{z}/{x}/{y}.png';
+const myTile = window.location.origin + import.meta.env.BASE_URL + '{z}/{x}/{y}.png';
 
 const mapEl = ref<HTMLElement | null>(null);
 
