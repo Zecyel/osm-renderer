@@ -13,6 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate tiles
+        run: python ./main.py
+
       - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
